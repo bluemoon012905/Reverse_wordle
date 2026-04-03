@@ -221,6 +221,7 @@ input {
   text-transform: uppercase;
   font-size: 1.6rem;
   background: #12171b;
+  color: var(--ink);
 }
 
 .letter-slot.green {
