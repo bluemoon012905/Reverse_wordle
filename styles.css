@@ -120,16 +120,19 @@ input {
 
 .play-layout {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-areas: "main sidebar";
   gap: 18px;
   align-items: start;
 }
 
 .play-main {
+  grid-area: main;
   min-width: 0;
 }
 
 .sidebar {
+  grid-area: sidebar;
   position: sticky;
   top: 18px;
 }
@@ -365,6 +368,17 @@ input {
   font-size: 0.95rem;
 }
 
+.legend-reward {
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  flex: 0 0 auto;
+}
+
+.legend-reward-count {
+  font-size: 0.55rem;
+}
+
 .tier-dot,
 .tier-badge {
   display: inline-flex;
@@ -388,10 +402,39 @@ input {
   background: var(--line);
 }
 
+.reward-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.tier-circle {
+  width: 56px;
+  height: 56px;
+  min-height: 56px;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+}
+
 .selector-tier {
-  min-height: 30px;
   margin: 2px 0 0;
-  font-size: 0.85rem;
+}
+
+.selector-rewards {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selector-hardmode {
+  flex: 0 0 auto;
+}
+
+.selector-hardmode-count {
+  font-size: 1.1rem;
 }
 
 .bronze {
@@ -406,8 +449,14 @@ input {
   background: var(--gold);
 }
 
-.next-link {
+.post-submit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 12px;
+}
+
+.next-link {
   background: #24303a;
   color: var(--ink);
   border: 1px solid var(--line);
@@ -416,6 +465,18 @@ input {
 
 .next-link:hover {
   background: #2b3843;
+  border-color: #42515e;
+}
+
+.another-solution {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.another-solution:hover {
+  background: #1f262d;
   border-color: #42515e;
 }
 
@@ -429,6 +490,27 @@ input {
   line-height: 1;
 }
 
+.reward-circle {
+  width: 56px;
+  height: 56px;
+  min-height: 56px;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line));
+  background: radial-gradient(circle at top, rgba(214, 179, 71, 0.22), rgba(26, 31, 36, 0.98) 68%);
+}
+
+.reward-circle-count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gold);
+}
+
 .solution-list {
   display: grid;
   gap: 12px;
@@ -439,6 +521,14 @@ input {
   border: 1px solid var(--line);
   border-radius: 10px;
   background: #12171b;
+}
+
+.solution-mark {
+  margin-bottom: 6px;
+  color: var(--gold);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .solution-row {
@@ -496,6 +586,9 @@ input {
 
   .play-layout {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "main"
+      "sidebar";
   }
 
   .sidebar {
@@ -539,6 +632,10 @@ input {
 
   .guess-word {
     width: auto;
+  }
+
+  .post-submit-actions {
+    flex-direction: column;
   }
 
   .square.big {

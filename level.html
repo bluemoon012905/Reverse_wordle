@@ -15,7 +15,12 @@
       <aside class="sidebar panel">
         <p class="eyebrow">Unique Solutions</p>
         <p class="solution-count" id="solutionCount">0</p>
-        <div class="tier-badge" id="tierBadge">None</div>
+        <div class="reward-row">
+          <div class="tier-badge tier-circle" id="tierBadge" aria-label="Solution tier"></div>
+          <div class="reward-circle" aria-label="Hard mode solutions found">
+            <span class="reward-circle-count" id="hardModeCount">0</span>
+          </div>
+        </div>
         <div class="solution-list" id="solutionList"></div>
       </aside>
 
@@ -27,6 +32,7 @@
               <div class="legend-item"><span class="tier-dot bronze"></span><span>Bronze: 1-4</span></div>
               <div class="legend-item"><span class="tier-dot silver"></span><span>Silver: 5-9</span></div>
               <div class="legend-item"><span class="tier-dot gold"></span><span>Gold: 10+</span></div>
+              <div class="legend-item"><span class="reward-circle legend-reward"><span class="reward-circle-count legend-reward-count">#</span></span><span>Hard mode count</span></div>
             </div>
           </section>
           <a class="outline-button" href="index.html">Return to levels</a>
@@ -49,7 +55,10 @@
           </form>
 
           <p class="status-text" id="statusText">Fill every square. Checks run from bottom to top.</p>
-          <a class="primary-button next-link hidden" id="nextLink" href="index.html">Next level</a>
+          <div class="post-submit-actions">
+            <button class="primary-button another-solution hidden" id="anotherSolutionButton" type="button">Enter another solution</button>
+            <a class="primary-button next-link hidden" id="nextLink" href="index.html">Next level</a>
+          </div>
         </section>
       </section>
     </div>

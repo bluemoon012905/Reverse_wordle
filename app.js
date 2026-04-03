@@ -78,9 +78,13 @@
       const card = document.createElement("a");
       const board = document.createElement("div");
       const label = document.createElement("span");
+      const rewards = document.createElement("div");
       const tier = document.createElement("div");
+      const hardMode = document.createElement("div");
+      const hardModeCount = document.createElement("span");
       const solutions = game.getStoredSolutions(levelNumber);
       const tierInfo = getTier(solutions.length);
+      const hardModeTotal = countHardModeSolutions(solutions);
 
       card.href = "level.html?level=" + levelNumber;
       card.className = "level-card" + (solved.has(levelNumber) ? " is-solved" : "");
@@ -92,26 +96,67 @@
       });
 
       label.textContent = "Level " + levelNumber;
-      tier.className = "tier-badge selector-tier" + (tierInfo.className ? " " + tierInfo.className : "");
-      tier.textContent = tierInfo.label;
+      rewards.className = "selector-rewards";
+      tier.className = "tier-badge tier-circle selector-tier" + (tierInfo.className ? " " + tierInfo.className : "");
+      tier.textContent = String(solutions.length);
+      tier.setAttribute("aria-label", "Solution tier: " + tierInfo.label);
+      tier.title = tierInfo.label + " tier, " + solutions.length + " solutions";
+      hardMode.className = "reward-circle selector-hardmode";
+      hardMode.setAttribute("aria-label", "Hard mode solutions found: " + hardModeTotal);
+      hardMode.title = "Hard mode solutions found: " + hardModeTotal;
+      hardModeCount.className = "reward-circle-count selector-hardmode-count";
+      hardModeCount.textContent = String(hardModeTotal);
+      hardMode.appendChild(hardModeCount);
+      rewards.appendChild(tier);
+      rewards.appendChild(hardMode);
 
       card.appendChild(board);
       card.appendChild(label);
-      card.appendChild(tier);
+      card.appendChild(rewards);
       levelGrid.appendChild(card);
     });
+  }
+
+  function isHardModeSolution(entry) {
+    const hardModeGuesses = [];
+    const hardModePatterns = [];
+
+    for (let index = 0; index < entry.rows.length; index += 1) {
+      if (index > 0) {
+        const state = game.buildHardModeState(hardModeGuesses, hardModePatterns);
+        if (!game.isHardModeLegal(entry.rows[index], state)) {
+          return false;
+        }
+      }
+
+      hardModeGuesses.push(entry.rows[index]);
+      hardModePatterns.push(game.evaluateGuess(entry.rows[index], entry.rows[entry.rows.length - 1]));
+    }
+
+    return true;
+  }
+
+  function countHardModeSolutions(solutions) {
+    return solutions.reduce(function (count, entry) {
+      return count + (isHardModeSolution(entry) ? 1 : 0);
+    }, 0);
   }
 
   function renderStoredSolutions(levelNumber) {
     const solutionCount = document.getElementById("solutionCount");
     const tierBadge = document.getElementById("tierBadge");
+    const hardModeCount = document.getElementById("hardModeCount");
     const solutionList = document.getElementById("solutionList");
     const solutions = game.getStoredSolutions(levelNumber);
     const tierInfo = getTier(solutions.length);
+    const hardModeTotal = countHardModeSolutions(solutions);
 
     solutionCount.textContent = String(solutions.length);
-    tierBadge.className = "tier-badge" + (tierInfo.className ? " " + tierInfo.className : "");
-    tierBadge.textContent = tierInfo.label;
+    tierBadge.className = "tier-badge tier-circle" + (tierInfo.className ? " " + tierInfo.className : "");
+    tierBadge.textContent = String(solutions.length);
+    tierBadge.setAttribute("aria-label", "Solution tier: " + tierInfo.label);
+    tierBadge.title = tierInfo.label + " tier, " + solutions.length + " solutions";
+    hardModeCount.textContent = String(hardModeTotal);
     solutionList.innerHTML = "";
 
     if (!solutions.length) {
@@ -124,7 +169,16 @@
 
     solutions.forEach(function (entry) {
       const item = document.createElement("article");
+      const hardMode = isHardModeSolution(entry);
       item.className = "solution-card";
+
+      if (hardMode) {
+        const marker = document.createElement("div");
+        marker.className = "solution-mark";
+        marker.textContent = "*";
+        marker.setAttribute("aria-label", "Hard mode solution");
+        item.appendChild(marker);
+      }
 
       entry.rows.forEach(function (row) {
         const line = document.createElement("div");
@@ -145,6 +199,7 @@
     const form = document.getElementById("answerForm");
     const checkButton = document.getElementById("checkBoardButton");
     const statusText = document.getElementById("statusText");
+    const anotherSolutionButton = document.getElementById("anotherSolutionButton");
     const nextLink = document.getElementById("nextLink");
     const inputBoard = document.getElementById("inputBoard");
     const inputs = [];
@@ -313,6 +368,24 @@
     renderStoredSolutions(levelNumber);
     updateBoardState();
 
+    anotherSolutionButton.addEventListener("click", function () {
+      inputs.forEach(function (input) {
+        input.value = "";
+        clearInputClasses(input);
+      });
+
+      rowEntries.forEach(function (entry) {
+        entry.status.className = "row-status";
+        entry.status.textContent = "Valid word: -";
+      });
+
+      statusText.textContent = "Fill every square. Checks run from bottom to top.";
+      setCheckButtonState(null);
+      if (inputs[0]) {
+        inputs[0].focus();
+      }
+    });
+
     form.addEventListener("submit", function (event) {
       const words = collectWords(
         rowEntries.map(function (entry) {
@@ -383,6 +456,7 @@
         nextLink.href = "index.html";
         nextLink.textContent = "Back to levels";
       }
+      anotherSolutionButton.classList.remove("hidden");
       nextLink.classList.remove("hidden");
     });
 
