@@ -143,11 +143,48 @@
     const clueBoard = document.getElementById("clueBoard");
     const levelLabel = document.getElementById("levelNumber");
     const form = document.getElementById("answerForm");
+    const checkButton = document.getElementById("checkBoardButton");
     const statusText = document.getElementById("statusText");
     const nextLink = document.getElementById("nextLink");
     const inputBoard = document.getElementById("inputBoard");
     const inputs = [];
     const rowEntries = [];
+
+    function setCheckButtonState(state) {
+      checkButton.classList.remove("is-success", "is-failure");
+      if (state) {
+        checkButton.classList.add(state);
+      }
+    }
+
+    function triggerFailureFeedback() {
+      setCheckButtonState(null);
+      void checkButton.offsetWidth;
+      setCheckButtonState("is-failure");
+    }
+
+    function launchConfetti() {
+      const layer = document.createElement("div");
+      const colors = ["#6aaa64", "#c9b458", "#edf1f5", "#cd7f32", "#aeb8c2"];
+
+      layer.className = "confetti-layer";
+
+      for (let index = 0; index < 28; index += 1) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = colors[index % colors.length];
+        piece.style.animationDuration = (2.1 + Math.random() * 1.2) + "s";
+        piece.style.animationDelay = (Math.random() * 0.16) + "s";
+        piece.style.setProperty("--drift", ((Math.random() * 140) - 70) + "px");
+        layer.appendChild(piece);
+      }
+
+      document.body.appendChild(layer);
+      window.setTimeout(function () {
+        layer.remove();
+      }, 3600);
+    }
 
     levelLabel.textContent = "Level " + levelNumber;
 
@@ -180,6 +217,7 @@
 
         input.addEventListener("input", function () {
           input.value = input.value.replace(/[^a-zA-Z]/g, "").slice(0, 1).toUpperCase();
+          setCheckButtonState(null);
           if (input.value) {
             const next = inputs[(rowIndex * 5) + columnIndex + 1];
             if (next) {
@@ -284,14 +322,17 @@
       const answer = words[words.length - 1];
 
       event.preventDefault();
+      setCheckButtonState(null);
 
       if (words.some(function (word) { return word.length !== 5; })) {
         statusText.textContent = "Fill every square first.";
+        triggerFailureFeedback();
         return;
       }
 
       if (words.some(function (word) { return !game.WORD_SET.has(word); })) {
         statusText.textContent = "Every row must be a valid five-letter English word.";
+        triggerFailureFeedback();
         return;
       }
 
@@ -303,6 +344,7 @@
         if (!samePattern(actualPattern, puzzle.rows[index])) {
           statusText.textContent = "That board does not match the clue pattern.";
           updateBoardState();
+          triggerFailureFeedback();
           return;
         }
       }
@@ -313,6 +355,7 @@
           if (!game.isHardModeLegal(words[index], state)) {
             statusText.textContent = "That board breaks Wordle hard mode.";
             updateBoardState();
+            triggerFailureFeedback();
             return;
           }
         }
@@ -323,8 +366,11 @@
 
       if (game.saveStoredSolution(levelNumber, words)) {
         statusText.textContent = "Valid solution saved.";
+        setCheckButtonState("is-success");
+        launchConfetti();
       } else {
         statusText.textContent = "Valid, but you already saved that solution.";
+        setCheckButtonState("is-success");
       }
 
       game.saveSolvedLevel(levelNumber);

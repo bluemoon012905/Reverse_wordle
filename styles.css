@@ -140,6 +140,12 @@ input {
   gap: 10px;
 }
 
+.clue-board .clue-row,
+.clue-board .squares,
+.input-board .letter-slots {
+  width: 100%;
+}
+
 .clue-row {
   display: flex;
   align-items: center;
@@ -284,6 +290,50 @@ input {
   cursor: pointer;
 }
 
+.answer-submit {
+  background: #24303a;
+  transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.answer-submit.is-success {
+  background: var(--green);
+  box-shadow: 0 12px 26px rgba(106, 170, 100, 0.28);
+}
+
+.answer-submit.is-failure {
+  animation: button-wobble 460ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes button-wobble {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  15% {
+    transform: translateX(-5px) rotate(-2deg);
+  }
+
+  30% {
+    transform: translateX(4px) rotate(2deg);
+  }
+
+  45% {
+    transform: translateX(-4px) rotate(-1.6deg);
+  }
+
+  60% {
+    transform: translateX(3px) rotate(1.2deg);
+  }
+
+  75% {
+    transform: translateX(-2px) rotate(-0.8deg);
+  }
+
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
 .outline-button {
   display: inline-flex;
   align-items: center;
@@ -358,6 +408,15 @@ input {
 
 .next-link {
   margin-top: 12px;
+  background: #24303a;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.next-link:hover {
+  background: #2b3843;
+  border-color: #42515e;
 }
 
 .status-text {
@@ -402,6 +461,34 @@ input {
   display: none;
 }
 
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10vh;
+  width: 10px;
+  height: 18px;
+  border-radius: 3px;
+  opacity: 0.95;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(var(--drift, 0px), 110vh, 0) rotate(720deg);
+  }
+}
+
 @media (max-width: 860px) {
   .level-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -422,6 +509,15 @@ input {
 }
 
 @media (max-width: 560px) {
+  .shell {
+    width: min(100%, calc(100% - 20px));
+    padding: 20px 0 32px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
   .level-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
