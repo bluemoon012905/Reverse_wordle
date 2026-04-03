@@ -1,0 +1,228 @@
+:root {
+  --bg: #f7f4ed;
+  --panel: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6a685f;
+  --line: #d8d1c2;
+  --empty: #e7e2d7;
+  --green: #6aaa64;
+  --yellow: #c9b458;
+  --gray: #8a8f98;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.shell {
+  width: min(1080px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.shell-narrow {
+  width: min(560px, calc(100% - 32px));
+}
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1;
+}
+
+.hero p,
+.eyebrow,
+.status-text,
+.guess-word,
+.level-card span {
+  margin: 0;
+  color: var(--muted);
+}
+
+.hero-tight {
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: var(--muted);
+}
+
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 12px;
+}
+
+.level-card,
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.level-card {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.level-card:hover {
+  border-color: var(--ink);
+}
+
+.level-card.is-solved {
+  background: #f0f6ea;
+}
+
+.panel {
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.mini-board,
+.clue-board {
+  display: grid;
+  gap: 10px;
+}
+
+.clue-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guess-word {
+  width: 72px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+}
+
+.squares {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.square {
+  width: 18px;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: var(--empty);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.square.big {
+  width: 44px;
+  border-radius: 8px;
+}
+
+.square.green {
+  background: var(--green);
+}
+
+.square.yellow {
+  background: var(--yellow);
+}
+
+.square.gray {
+  background: var(--gray);
+}
+
+.answer-form {
+  display: grid;
+  gap: 16px;
+}
+
+.letter-slots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.letter-slot {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  background: #fcfbf8;
+}
+
+.letter-slot:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 0;
+}
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--ink);
+  color: white;
+  cursor: pointer;
+}
+
+.next-link {
+  margin-top: 12px;
+}
+
+.status-text {
+  min-height: 1.4em;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .clue-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .guess-word {
+    width: auto;
+  }
+
+  .square.big {
+    width: 100%;
+  }
+}

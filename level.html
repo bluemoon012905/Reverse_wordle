@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reverse Wordle Level</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="level">
+  <main class="shell shell-narrow">
+    <a class="back-link" href="index.html">All levels</a>
+
+    <header class="hero hero-tight">
+      <p class="eyebrow" id="levelNumber">Level</p>
+      <h1>Solve the word</h1>
+    </header>
+
+    <section class="panel">
+      <div id="clueBoard" class="clue-board" aria-label="Clue rows"></div>
+    </section>
+
+    <section class="panel">
+      <form id="answerForm" class="answer-form" autocomplete="off">
+        <div class="letter-slots" id="letterSlots" aria-label="Answer input"></div>
+        <button class="primary-button" type="submit">Check</button>
+      </form>
+
+      <p class="status-text" id="statusText">Type a five-letter word.</p>
+      <a class="primary-button next-link hidden" id="nextLink" href="index.html">Next level</a>
+    </section>
+  </main>
+
+  <script src="levels.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
