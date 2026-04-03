@@ -8,6 +8,7 @@
   --green: #6aaa64;
   --yellow: #c9b458;
   --gray: #8a8f98;
+  --red: #cc4b37;
 }
 
 * {
@@ -35,10 +36,6 @@ input {
   width: min(1080px, calc(100% - 32px));
   margin: 0 auto;
   padding: 32px 0 48px;
-}
-
-.shell-narrow {
-  width: min(560px, calc(100% - 32px));
 }
 
 .hero {
@@ -77,10 +74,16 @@ input {
   color: var(--muted);
 }
 
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .level-card,
@@ -91,7 +94,8 @@ input {
 }
 
 .level-card {
-  padding: 12px;
+  min-height: 178px;
+  padding: 18px;
   display: grid;
   gap: 10px;
 }
@@ -109,6 +113,22 @@ input {
   margin-bottom: 16px;
 }
 
+.play-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.play-main {
+  min-width: 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: 18px;
+}
+
 .mini-board,
 .clue-board {
   display: grid;
@@ -120,6 +140,10 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.clue-only {
+  justify-content: flex-start;
 }
 
 .guess-word {
@@ -136,7 +160,7 @@ input {
 }
 
 .square {
-  width: 18px;
+  width: 24px;
   aspect-ratio: 1;
   border-radius: 4px;
   background: var(--empty);
@@ -165,6 +189,18 @@ input {
   gap: 16px;
 }
 
+.input-board {
+  display: grid;
+  gap: 10px;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 108px;
+  gap: 12px;
+  align-items: center;
+}
+
 .letter-slots {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -182,9 +218,51 @@ input {
   background: #fcfbf8;
 }
 
+.letter-slot.green {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+}
+
+.letter-slot.yellow {
+  background: var(--yellow);
+  color: white;
+  border-color: var(--yellow);
+}
+
+.letter-slot.gray {
+  background: var(--gray);
+  color: white;
+  border-color: var(--gray);
+}
+
+.letter-slot.mismatch {
+  background: color-mix(in srgb, var(--red) 88%, white);
+  color: white;
+  border-color: var(--red);
+}
+
 .letter-slot:focus {
   outline: 2px solid var(--ink);
   outline-offset: 0;
+}
+
+.row-status {
+  min-height: 44px;
+  display: grid;
+  align-items: center;
+  justify-items: end;
+  color: var(--muted);
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.row-status.ok {
+  color: var(--green);
+}
+
+.row-status.bad {
+  color: var(--red);
 }
 
 .primary-button {
@@ -200,6 +278,19 @@ input {
   cursor: pointer;
 }
 
+.outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 0 22px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
 .next-link {
   margin-top: 12px;
 }
@@ -208,14 +299,80 @@ input {
   min-height: 1.4em;
 }
 
+.solution-count {
+  margin: 0 0 16px;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.solution-list {
+  display: grid;
+  gap: 12px;
+}
+
+.solution-card {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fcfbf8;
+}
+
+.solution-row {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.solution-row + .solution-row {
+  margin-top: 6px;
+}
+
+.solution-empty {
+  margin: 0;
+  color: var(--muted);
+}
+
 .hidden {
   display: none;
 }
 
+@media (max-width: 860px) {
+  .level-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .play-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .top-actions {
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 560px) {
+  .level-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
   .clue-row {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .row-status {
+    justify-items: start;
+    text-align: left;
   }
 
   .guess-word {

@@ -7,27 +7,40 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="level">
-  <main class="shell shell-narrow">
-    <a class="back-link" href="index.html">All levels</a>
+  <main class="shell">
+    <div class="play-layout">
+      <aside class="sidebar panel">
+        <p class="eyebrow">Unique Solutions</p>
+        <p class="solution-count" id="solutionCount">0</p>
+        <div class="solution-list" id="solutionList"></div>
+      </aside>
 
-    <header class="hero hero-tight">
-      <p class="eyebrow" id="levelNumber">Level</p>
-      <h1>Solve the word</h1>
-    </header>
+      <section class="play-main">
+        <div class="top-actions">
+          <a class="outline-button" href="index.html">Return to levels</a>
+        </div>
 
-    <section class="panel">
-      <div id="clueBoard" class="clue-board" aria-label="Clue rows"></div>
-    </section>
+        <header class="hero hero-tight">
+          <p class="eyebrow" id="levelNumber">Level</p>
+          <h1>Fill the whole board</h1>
+          <p>Boards vary from 2 rows to 6 rows. The last row must be all green.</p>
+        </header>
 
-    <section class="panel">
-      <form id="answerForm" class="answer-form" autocomplete="off">
-        <div class="letter-slots" id="letterSlots" aria-label="Answer input"></div>
-        <button class="primary-button" type="submit">Check</button>
-      </form>
+        <section class="panel">
+          <div id="clueBoard" class="clue-board" aria-label="Clue rows"></div>
+        </section>
 
-      <p class="status-text" id="statusText">Type a five-letter word.</p>
-      <a class="primary-button next-link hidden" id="nextLink" href="index.html">Next level</a>
-    </section>
+        <section class="panel">
+          <form id="answerForm" class="answer-form" autocomplete="off">
+            <div class="input-board" id="inputBoard" aria-label="Answer input"></div>
+            <button class="primary-button" type="submit">Check board</button>
+          </form>
+
+          <p class="status-text" id="statusText">Fill every square. Checks run from bottom to top.</p>
+          <a class="primary-button next-link hidden" id="nextLink" href="index.html">Next level</a>
+        </section>
+      </section>
+    </div>
   </main>
 
   <script src="levels.js"></script>
