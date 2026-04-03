@@ -23,6 +23,9 @@ body {
   font-family: "Roboto", sans-serif;
   background: var(--bg);
   color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -39,6 +42,7 @@ input {
   width: min(1080px, calc(100% - 32px));
   margin: 0 auto;
   padding: 32px 0 48px;
+  flex: 1;
 }
 
 .hero {
@@ -116,6 +120,39 @@ input {
 .panel {
   padding: 18px;
   margin-bottom: 16px;
+}
+
+.site-footer {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.site-footer p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+}
+
+.footer-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #24303a;
+  color: var(--ink);
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.footer-button:hover {
+  background: #2b3843;
+  border-color: #42515e;
 }
 
 .play-layout {
