@@ -53,6 +53,22 @@
     input.classList.remove("green", "yellow", "gray", "mismatch");
   }
 
+  function getTier(count) {
+    if (count >= 10) {
+      return { label: "Gold", className: "gold" };
+    }
+
+    if (count >= 5) {
+      return { label: "Silver", className: "silver" };
+    }
+
+    if (count >= 1) {
+      return { label: "Bronze", className: "bronze" };
+    }
+
+    return { label: "None", className: "" };
+  }
+
   function renderSelectorPage() {
     const levelGrid = document.getElementById("levelGrid");
     const solved = new Set(game.getSolvedLevels());
@@ -62,6 +78,9 @@
       const card = document.createElement("a");
       const board = document.createElement("div");
       const label = document.createElement("span");
+      const tier = document.createElement("div");
+      const solutions = game.getStoredSolutions(levelNumber);
+      const tierInfo = getTier(solutions.length);
 
       card.href = "level.html?level=" + levelNumber;
       card.className = "level-card" + (solved.has(levelNumber) ? " is-solved" : "");
@@ -73,19 +92,26 @@
       });
 
       label.textContent = "Level " + levelNumber;
+      tier.className = "tier-badge selector-tier" + (tierInfo.className ? " " + tierInfo.className : "");
+      tier.textContent = tierInfo.label;
 
       card.appendChild(board);
       card.appendChild(label);
+      card.appendChild(tier);
       levelGrid.appendChild(card);
     });
   }
 
   function renderStoredSolutions(levelNumber) {
     const solutionCount = document.getElementById("solutionCount");
+    const tierBadge = document.getElementById("tierBadge");
     const solutionList = document.getElementById("solutionList");
     const solutions = game.getStoredSolutions(levelNumber);
+    const tierInfo = getTier(solutions.length);
 
     solutionCount.textContent = String(solutions.length);
+    tierBadge.className = "tier-badge" + (tierInfo.className ? " " + tierInfo.className : "");
+    tierBadge.textContent = tierInfo.label;
     solutionList.innerHTML = "";
 
     if (!solutions.length) {
@@ -191,6 +217,8 @@
       });
       const answer = words[words.length - 1];
       const answerReady = answer.length === 5 && game.WORD_SET.has(answer);
+      const priorGuesses = [];
+      const priorPatterns = [];
 
       rowEntries.forEach(function (entry, rowIndex) {
         const word = words[rowIndex];
@@ -198,13 +226,20 @@
         const isValidWord = isComplete && game.WORD_SET.has(word);
         const targetPattern = puzzle.rows[rowIndex];
         const actualPattern = answerReady ? game.evaluateGuess(word, answer) : null;
+        const hardModeReady = answerReady && rowIndex > 0;
+        const hardModeLegal = hardModeReady && isValidWord
+          ? game.isHardModeLegal(word, game.buildHardModeState(priorGuesses, priorPatterns))
+          : true;
 
         entry.status.className = "row-status";
 
         if (!isComplete) {
           entry.status.textContent = "Valid word: -";
+        } else if (isValidWord && hardModeReady && !hardModeLegal) {
+          entry.status.textContent = "Valid word: yes, hard mode: no";
+          entry.status.classList.add("bad");
         } else if (isValidWord) {
-          entry.status.textContent = "Valid word: yes";
+          entry.status.textContent = hardModeReady ? "Valid word: yes, hard mode: yes" : "Valid word: yes";
           entry.status.classList.add("ok");
         } else {
           entry.status.textContent = "Valid word: no";
@@ -225,8 +260,15 @@
           input.classList.add(actualPattern[columnIndex]);
           if (actualPattern[columnIndex] !== targetPattern[columnIndex]) {
             input.classList.add("mismatch");
+          } else if (!hardModeLegal) {
+            input.classList.add("mismatch");
           }
         });
+
+        if (answerReady && isValidWord) {
+          priorGuesses.push(word);
+          priorPatterns.push(actualPattern);
+        }
       });
     }
 
@@ -253,6 +295,9 @@
         return;
       }
 
+      const hardModeGuesses = [];
+      const hardModePatterns = [];
+
       for (let index = puzzle.rows.length - 1; index >= 0; index -= 1) {
         const actualPattern = game.evaluateGuess(words[index], answer);
         if (!samePattern(actualPattern, puzzle.rows[index])) {
@@ -260,6 +305,20 @@
           updateBoardState();
           return;
         }
+      }
+
+      for (let index = 0; index < words.length; index += 1) {
+        if (index > 0) {
+          const state = game.buildHardModeState(hardModeGuesses, hardModePatterns);
+          if (!game.isHardModeLegal(words[index], state)) {
+            statusText.textContent = "That board breaks Wordle hard mode.";
+            updateBoardState();
+            return;
+          }
+        }
+
+        hardModeGuesses.push(words[index]);
+        hardModePatterns.push(game.evaluateGuess(words[index], answer));
       }
 
       if (game.saveStoredSolution(levelNumber, words)) {

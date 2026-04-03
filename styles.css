@@ -1,14 +1,17 @@
 :root {
-  --bg: #f7f4ed;
-  --panel: #ffffff;
-  --ink: #1d1d1b;
-  --muted: #6a685f;
-  --line: #d8d1c2;
-  --empty: #e7e2d7;
+  --bg: #111417;
+  --panel: #1a1f24;
+  --ink: #edf1f5;
+  --muted: #9aa6b2;
+  --line: #323c46;
+  --empty: #24303a;
   --green: #6aaa64;
   --yellow: #c9b458;
-  --gray: #8a8f98;
+  --gray: #55616d;
   --red: #cc4b37;
+  --bronze: #cd7f32;
+  --silver: #aeb8c2;
+  --gold: #d6b347;
 }
 
 * {
@@ -17,7 +20,7 @@
 
 body {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Roboto", sans-serif;
   background: var(--bg);
   color: var(--ink);
 }
@@ -76,7 +79,9 @@ input {
 
 .top-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
   margin-bottom: 20px;
 }
 
@@ -105,7 +110,7 @@ input {
 }
 
 .level-card.is-solved {
-  background: #f0f6ea;
+  background: #1d2621;
 }
 
 .panel {
@@ -164,7 +169,7 @@ input {
   aspect-ratio: 1;
   border-radius: 4px;
   background: var(--empty);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .square.big {
@@ -215,7 +220,7 @@ input {
   text-align: center;
   text-transform: uppercase;
   font-size: 1.6rem;
-  background: #fcfbf8;
+  background: #12171b;
 }
 
 .letter-slot.green {
@@ -291,6 +296,65 @@ input {
   font-size: 1rem;
 }
 
+.legend {
+  margin-bottom: 0;
+  min-width: 240px;
+}
+
+.legend-list {
+  display: grid;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.tier-dot,
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.tier-dot {
+  width: 12px;
+  height: 12px;
+}
+
+.tier-badge {
+  min-height: 38px;
+  padding: 0 14px;
+  margin: 0 0 16px;
+  width: fit-content;
+  color: #111417;
+  background: var(--line);
+}
+
+.selector-tier {
+  min-height: 30px;
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+}
+
+.bronze {
+  background: var(--bronze);
+}
+
+.silver {
+  background: var(--silver);
+}
+
+.gold {
+  background: var(--gold);
+}
+
 .next-link {
   margin-top: 12px;
 }
@@ -314,7 +378,7 @@ input {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: #fcfbf8;
+  background: #12171b;
 }
 
 .solution-row {
@@ -351,7 +415,8 @@ input {
   }
 
   .top-actions {
-    justify-content: flex-start;
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

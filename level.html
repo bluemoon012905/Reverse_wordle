@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reverse Wordle Level</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="level">
@@ -12,11 +15,20 @@
       <aside class="sidebar panel">
         <p class="eyebrow">Unique Solutions</p>
         <p class="solution-count" id="solutionCount">0</p>
+        <div class="tier-badge" id="tierBadge">None</div>
         <div class="solution-list" id="solutionList"></div>
       </aside>
 
       <section class="play-main">
         <div class="top-actions">
+          <section class="legend panel">
+            <p class="eyebrow">Legend</p>
+            <div class="legend-list">
+              <div class="legend-item"><span class="tier-dot bronze"></span><span>Bronze: 1-4</span></div>
+              <div class="legend-item"><span class="tier-dot silver"></span><span>Silver: 5-9</span></div>
+              <div class="legend-item"><span class="tier-dot gold"></span><span>Gold: 10+</span></div>
+            </div>
+          </section>
           <a class="outline-button" href="index.html">Return to levels</a>
         </div>
 

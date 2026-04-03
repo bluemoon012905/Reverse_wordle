@@ -62,6 +62,127 @@ function evaluateGuess(guess, answer) {
   return result.join("");
 }
 
+function getLetterCounts(word) {
+  const counts = Object.create(null);
+
+  for (const letter of word) {
+    counts[letter] = (counts[letter] || 0) + 1;
+  }
+
+  return counts;
+}
+
+function buildHardModeState(guesses, patterns) {
+  const fixed = Array(5).fill(null);
+  const bannedPositions = Object.create(null);
+  const minCounts = Object.create(null);
+  const maxCounts = Object.create(null);
+
+  guesses.forEach(function (guess, rowIndex) {
+    const pattern = patterns[rowIndex];
+    const nonGrayCounts = Object.create(null);
+    const grayLetters = new Set();
+
+    for (let index = 0; index < guess.length; index += 1) {
+      const letter = guess[index];
+      const color = pattern[index];
+
+      if (color === "2") {
+        fixed[index] = letter;
+        nonGrayCounts[letter] = (nonGrayCounts[letter] || 0) + 1;
+      } else if (color === "1") {
+        if (!bannedPositions[letter]) {
+          bannedPositions[letter] = new Set();
+        }
+        bannedPositions[letter].add(index);
+        nonGrayCounts[letter] = (nonGrayCounts[letter] || 0) + 1;
+      } else {
+        grayLetters.add(letter);
+      }
+    }
+
+    Object.keys(nonGrayCounts).forEach(function (letter) {
+      minCounts[letter] = Math.max(minCounts[letter] || 0, nonGrayCounts[letter]);
+    });
+
+    grayLetters.forEach(function (letter) {
+      const count = nonGrayCounts[letter] || 0;
+
+      if (count === 0) {
+        maxCounts[letter] = 0;
+      } else {
+        maxCounts[letter] = Math.min(
+          maxCounts[letter] === undefined ? Number.POSITIVE_INFINITY : maxCounts[letter],
+          count
+        );
+      }
+    });
+  });
+
+  return {
+    fixed: fixed,
+    bannedPositions: bannedPositions,
+    minCounts: minCounts,
+    maxCounts: maxCounts
+  };
+}
+
+function isHardModeLegal(guess, state) {
+  const counts = getLetterCounts(guess);
+
+  for (let index = 0; index < guess.length; index += 1) {
+    const fixedLetter = state.fixed[index];
+    if (fixedLetter && guess[index] !== fixedLetter) {
+      return false;
+    }
+
+    const banned = state.bannedPositions[guess[index]];
+    if (banned && banned.has(index)) {
+      return false;
+    }
+  }
+
+  Object.keys(state.minCounts).forEach(function (letter) {
+    if ((counts[letter] || 0) < state.minCounts[letter]) {
+      counts.__invalid = true;
+    }
+  });
+
+  if (counts.__invalid) {
+    return false;
+  }
+
+  return !Object.keys(state.maxCounts).some(function (letter) {
+    return (counts[letter] || 0) > state.maxCounts[letter];
+  });
+}
+
+function boardRespectsHardMode(rows, answer) {
+  const guesses = [];
+  const patterns = [];
+
+  for (let index = 0; index < rows.length - 1; index += 1) {
+    if (index > 0) {
+      const state = buildHardModeState(guesses, patterns);
+      if (!isHardModeLegal(rows[index], state)) {
+        return false;
+      }
+    }
+
+    guesses.push(rows[index]);
+    patterns.push(evaluateGuess(rows[index], answer));
+  }
+
+  if (rows.length > 1) {
+    const finalState = buildHardModeState(guesses, patterns);
+    if (!isHardModeLegal(answer, finalState)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function loadWords() {
   return [...new Set(
     fs.readFileSync(SOURCE_PATH, "utf8")
@@ -179,12 +300,12 @@ function createPuzzle(sourceAnswer, sourceClues, words) {
     seenBoards.add(key);
     discovered.push(boardRows);
 
-    if (discovered.length >= 5) {
+    if (discovered.length >= 3) {
       break;
     }
   }
 
-  if (discovered.length < 5) {
+  if (discovered.length < 3) {
     return null;
   }
 
@@ -270,7 +391,7 @@ const puzzles = buildPuzzles(words).sort(function (left, right) {
   };
 });
 
-const output = `(function () {
+  const output = `(function () {
   const WORDS = ${JSON.stringify(words)};
 
   const PUZZLES = ${JSON.stringify(puzzles, null, 2)};
@@ -299,6 +420,99 @@ const output = `(function () {
     }
 
     return result;
+  }
+
+  function getLetterCounts(word) {
+    const counts = Object.create(null);
+
+    for (const letter of word) {
+      counts[letter] = (counts[letter] || 0) + 1;
+    }
+
+    return counts;
+  }
+
+  function buildHardModeState(guesses, patterns) {
+    const fixed = Array(5).fill(null);
+    const bannedPositions = Object.create(null);
+    const minCounts = Object.create(null);
+    const maxCounts = Object.create(null);
+
+    guesses.forEach(function (guess, rowIndex) {
+      const pattern = patterns[rowIndex];
+      const nonGrayCounts = Object.create(null);
+      const grayLetters = new Set();
+
+      for (let index = 0; index < guess.length; index += 1) {
+        const letter = guess[index];
+        const color = pattern[index];
+
+        if (color === "green") {
+          fixed[index] = letter;
+          nonGrayCounts[letter] = (nonGrayCounts[letter] || 0) + 1;
+        } else if (color === "yellow") {
+          if (!bannedPositions[letter]) {
+            bannedPositions[letter] = new Set();
+          }
+          bannedPositions[letter].add(index);
+          nonGrayCounts[letter] = (nonGrayCounts[letter] || 0) + 1;
+        } else {
+          grayLetters.add(letter);
+        }
+      }
+
+      Object.keys(nonGrayCounts).forEach(function (letter) {
+        minCounts[letter] = Math.max(minCounts[letter] || 0, nonGrayCounts[letter]);
+      });
+
+      grayLetters.forEach(function (letter) {
+        const count = nonGrayCounts[letter] || 0;
+
+        if (count === 0) {
+          maxCounts[letter] = 0;
+        } else {
+          maxCounts[letter] = Math.min(
+            maxCounts[letter] === undefined ? Number.POSITIVE_INFINITY : maxCounts[letter],
+            count
+          );
+        }
+      });
+    });
+
+    return {
+      fixed: fixed,
+      bannedPositions: bannedPositions,
+      minCounts: minCounts,
+      maxCounts: maxCounts
+    };
+  }
+
+  function isHardModeLegal(guess, state) {
+    const counts = getLetterCounts(guess);
+
+    for (let index = 0; index < guess.length; index += 1) {
+      const fixedLetter = state.fixed[index];
+      if (fixedLetter && guess[index] !== fixedLetter) {
+        return false;
+      }
+
+      const banned = state.bannedPositions[guess[index]];
+      if (banned && banned.has(index)) {
+        return false;
+      }
+    }
+
+    const failsMinimum = Object.keys(state.minCounts).some(function (letter) {
+      return (counts[letter] || 0) < state.minCounts[letter];
+    });
+
+    if (failsMinimum) {
+      return false;
+    }
+
+    return !Object.keys(state.maxCounts).some(function (letter) {
+      return (counts[letter] || 0) > state.maxCounts[letter];
+    });
   }
 
   function getSolvedLevels() {
@@ -345,6 +559,8 @@ const output = `(function () {
     WORD_SET: new Set(WORDS),
     PUZZLES: PUZZLES,
     evaluateGuess: evaluateGuess,
+    buildHardModeState: buildHardModeState,
+    isHardModeLegal: isHardModeLegal,
     getSolvedLevels: getSolvedLevels,
     saveSolvedLevel: saveSolvedLevel,
     getStoredSolutions: getStoredSolutions,
